@@ -81,82 +81,28 @@ export default class App extends Component {
 
   onSubmit = async () => {
     this.setState({ imageUrl: this.state.input });
-    const result = await axios.post("http://localhost:3001/imgurl", {
-      imageUrl: this.state.input,
-    });
 
-    if (result) {
-      const imageResult = await axios.post("http://localhost:3001/images", {
-        id: this.state.user.id,
+    try {
+      const result = await axios.post("http://localhost:3001/imgurl", {
+        imageUrl: this.state.input,
       });
 
-      this.setState(
-        Object.assign(this.state.user, {
-          entries: imageResult.data[0].entries,
-        })
-      );
+      if (result) {
+        const imageResult = await axios.post("http://localhost:3001/images", {
+          id: this.state.user.id,
+        });
+
+        this.setState(
+          Object.assign(this.state.user, {
+            entries: imageResult.data[0].entries,
+          })
+        );
+      }
+
+      this.faceLocation(this.faceCalculate(result.data));
+    } catch (e) {
+      console.log(e);
     }
-
-    this.faceLocation(this.faceCalculate(result.data));
-
-    // const USER_ID = "dh45vwq6u4j7";
-    // const PAT = "20dde3f0f1ef4995bf62a4146c1fd824";
-    // const APP_ID = "my-first-application";
-    // const MODEL_ID = "face-detection";
-    // const MODEL_VERSION_ID = "45fb9a671625463fa646c3523a3087d5";
-    // const IMAGE_URL = this.state.input;
-
-    // const raw = JSON.stringify({
-    //   user_app_id: {
-    //     user_id: USER_ID,
-    //     app_id: APP_ID,
-    //   },
-    //   inputs: [
-    //     {
-    //       data: {
-    //         image: {
-    //           url: IMAGE_URL,
-    //         },
-    //       },
-    //     },
-    //   ],
-    // });
-
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     Authorization: "Key " + PAT,
-    //   },
-    //   body: raw,
-    // };
-
-    // fetch(
-    //   "https://api.clarifai.com/v2/models/" +
-    //     MODEL_ID +
-    //     "/versions/" +
-    //     MODEL_VERSION_ID +
-    //     "/outputs",
-    //   requestOptions
-    // )
-    //   .then((response) => response.json())
-    //   .then(async (result) => {
-    //     console.log(result);
-    // if (result) {
-    //   const imageResult = await axios.post("http://localhost:3001/images", {
-    //     id: this.state.user.id,
-    //   });
-
-    //   this.setState(
-    //     Object.assign(this.state.user, {
-    //       entries: imageResult.data[0].entries,
-    //     })
-    //   );
-    // }
-
-    // this.faceLocation(this.faceCalculate(result));
-    //   })
-    //   .catch((error) => console.log("error", error));
   };
 
   render() {
